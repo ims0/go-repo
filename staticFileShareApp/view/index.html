@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{.Title}}</title>
+    <style>
+.file_upload_box {
+  display: inline-block;
+  width: 200px;
+  height: 50px;
+  position: relative;
+  overflow: hidden;
+}
+       .file_upload_box input[type=file] {
+         position: absolute;
+         left: 0;
+         top: 0;
+         width: 100%;
+         line-height: 50px;
+         opacity: 0;
+         cursor: pointer;
+       }
+       .file_upload_box a {
+         display: inline-block;
+         width: 100%;
+         line-height: 50px;
+         text-align: center;
+         font-family: "Microsoft yahei";
+         background-color: #f60;
+         color: #FFF;
+         font-weight: 700;
+         text-decoration: none;
+       }    
+       .flexcontainer{
+         display:flex;
+       }           
+    </style>
+
+  </head>
+  <body>
+    <div class="flexcontainer"> 
+      {{if $.FlagAllowDel}}
+      <span>管理面板</span>
+      {{else}}
+      <div id="fileSpan" style="background-color:#FFE;width:100%;height:50px">请将文件拖到这里上传(覆盖同名文件)</div>
+      <div class="file_upload_box">
+        <input type="file" name="file" onchange="upload(this)"/>
+        <a href="#none">上传文件</a>
+      </div>
+      {{end}}    
+
+    </div>     
+    <script type="text/javascript">    
+      window.onload = function(){  
+        var uuz = document.getElementById('fileSpan');  
+
+        uuz.ondragenter = function(e){  
+          e.preventDefault();  
+        }  
+
+        uuz.ondragover = function(e){  
+          e.preventDefault();  
+          this.innerHTML = '请松开鼠标';  
+          this.style.cssText="background-color:#EFF;width:100%;height:50px;"
+        }  
+
+        uuz.ondragleave = function(e){  
+          e.preventDefault();  
+          this.innerHTML = '请将文件拖到这里上传';  
+          this.style.cssText="background-color:#FFE;width:100%;height:50px;"
+        }  
+
+        uuz.ondrop = function(e){  
+          e.preventDefault();  
+          this.innerHTML = '请将文件拖到这里上传';  
+
+          var upfile = e.dataTransfer.files[0]; //获取要上传的文件对象(可以上传多个) 
+          //    alert(upfile.name)
+          //alert(upfile.type)        
+          var formdata = new FormData();  
+          var xhr = new XMLHttpRequest();  
+          formdata.append('upfile', upfile); //设置服务器端接收的name为upfile  
+          xhr.open("post","");
+          xhr.onreadystatechange = function(){ 
+            if(this.readyState==4){
+              if(this.status==200){ //上传成功  
+                var resultText = this.responseText;
+                console.info(resultText);
+                //转json
+                var jsonObj = JSON.parse(resultText);
+                console.info(jsonObj);
+                if(jsonObj.success){
+                  //var oUl = document.getElementById('ul1');
+                  //var oLi = document.createElement('li');
+                  //var oSpan = document.createElement('span');
+                  //oSpan.innerHTML = jsonObj.res +"   刚才上传";
+                  //oLi.appendChild(oSpan);
+                  //oUl.insertBefore(oLi, oUl.children[0]);
+                  //刷新
+                  window.location.reload();                     }
+              }else{  
+                alert('上传失败,请使用另一种方式上传');  
+              }
+            }
+          }  
+
+          xhr.send(formdata);  
+        }       
+      }
+function upload(e){
+  var upfile = e.files[0];
+  var formdata = new FormData();  
+  var xhr = new XMLHttpRequest();  
+  formdata.append('upfile', upfile); //设置服务器端接收的name为upfile  
+  xhr.open("post","");
+  xhr.onreadystatechange = function(){ 
+    if(this.readyState==4){
+      if(this.status==200){ //上传成功  
+        var resultText = this.responseText;                    
+        //转json
+        var jsonObj = JSON.parse(resultText);
+        console.info(jsonObj);
+        if(jsonObj.success){                            
+          //刷新
+          window.location.reload();                     }
+      }
+    }
+  } 
+  xhr.send(formdata);  
+}  
+    </script>
+    <div><a href="/share">返回总目录</a>  －  本目录文件</div>
+    <ul id="ul1" >
+
+      {{range  $i, $v := .Files}}    
+      <li style="line-height:200%">
+        <span> {{$v.Name}}   </span>    
+        <span> {{$v.Date}}   </span>    
+        {{if $.FlagAllowDel}}
+        <span> <a href='#' onclick="del({{$v.Url}})" >删除</a>   </span>
+        {{else}}
+        <span> <a href={{$v.Url}} download={{$v.Name}}>下载</a>   </span>
+        {{end}}    
+      </li>    
+      {{end}}
+    </ul>
+    <script type="text/javascript">
+      function del(path){
+        //alert(path);
+        var formdata = new FormData();  
+        var xhr = new XMLHttpRequest();  
+        formdata.append('path', path); //设置服务器端接收 
+        xhr.open("post","");
+        xhr.onreadystatechange = function(){ 
+          if(this.readyState==4){
+            if(this.status==200){ //成功                      
+              window.location.reload(); 
+            }
+          }else{  
+            //alert('删除失败');  
+          }
+        }
+        xhr.send(formdata);  
+      }   
+    </script>
+  </body>
+</html>
