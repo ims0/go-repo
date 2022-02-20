@@ -54,7 +54,7 @@ func main() {
     tmpl := iris.HTML("./view", ".html")
     app.RegisterView(tmpl)
     //主页
-    app.Get("/share", func(ctx iris.Context) {
+    app.Get("/file", func(ctx iris.Context) {
         ctx.View("index.html")
     })
     //下载
