@@ -1,12 +1,53 @@
 <html>
 <head>
 <title>Upload file</title>
+<style>
+
+body {
+  background-color: lightblue;
+}
+h1 {
+  color: yellow;
+  text-align: center;
+}
+
+input {
+  color: blue;
+  font-size: 20px;
+}
+
+a:link, a:visited {
+  background-color: white;
+  color: black;
+  border: 2px solid green;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+a:hover, a:active {
+  background-color: green;
+  color: white;
+}
+
+</style>
 </head>
 <body>
-	<form enctype="multipart/form-data"
-		action="http://127.0.0.1:8080/upload" method="POST">
-		<input type="file" name="uploadfile" multiple/> <input type="hidden"
-			name="token" value="{{.}}" /> <input type="submit" value="upload" />
-	</form>
+    <h1> Upload file</h1>
+    <p style="text-align: center">
+    <a href="http://imsweb.club/share" >file list</a>
+    </p>
+    
+    <center>
+    <form enctype="multipart/form-data"
+        action="http://imsweb.club/file" method="POST">
+        <table>
+        <input type="file" name="uploadfile" multiple/>
+        <input type="hidden" name="token" value="{{.}}" />
+        <input type="submit" value="upload" />
+        </table>
+    </form>
+    <center>
 </body>
 </html>

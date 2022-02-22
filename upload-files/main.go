@@ -42,7 +42,7 @@ func newApp() *iris.Application {
     app.RegisterView(iris.HTML("./templates", ".html"))
 
     // Serve the upload_form.html to the client.
-    app.Get("/upload", func(ctx iris.Context) {
+    app.Get("/file", func(ctx iris.Context) {
         // create a token (optionally).
 
         now := time.Now().Unix()
@@ -55,7 +55,7 @@ func newApp() *iris.Application {
     })
 
     // Handle the post request from the upload_form.html to the server.
-    app.Post("/upload", func(ctx iris.Context) {
+    app.Post("/file", func(ctx iris.Context) {
         //
         // UploadFormFiles
         // uploads any number of incoming files ("multiple" property on the form input).
@@ -65,7 +65,8 @@ func newApp() *iris.Application {
         // it can be used to change a file's name based on the request,
         // at this example we will showcase how to use it
         // by prefixing the uploaded file with the current user's ip.
-        ctx.UploadFormFiles("./uploads", beforeSave)
+        ctx.UploadFormFiles("./share", beforeSave)
+        ctx.View("upload_form.html", 1)
     })
 
     app.Post("/upload_manual", func(ctx iris.Context) {
@@ -113,5 +114,5 @@ func beforeSave(ctx iris.Context, file *multipart.FileHeader)  {
     }
 
     file.Filename = ip + "-" + file.Filename
-    return 
+    return
 }
