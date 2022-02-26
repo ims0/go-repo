@@ -39,9 +39,9 @@ func main() {
 
 func newApp() *iris.Application {
     app := iris.New()
-    app.RegisterView(iris.HTML("./templates", ".html"))
+    app.RegisterView(iris.HTML("./view", ".html"))
 
-    // Serve the upload_form.html to the client.
+    // Serve the index.html to the client.
     app.Get("/file", func(ctx iris.Context) {
         // create a token (optionally).
 
@@ -51,10 +51,10 @@ func newApp() *iris.Application {
         token := fmt.Sprintf("%x", h.Sum(nil))
 
         // render the form with the token for any use you'd like.
-        ctx.View("upload_form.html", token)
+        ctx.View("index.html", token)
     })
 
-    // Handle the post request from the upload_form.html to the server.
+    // Handle the post request from the index.html to the server.
     app.Post("/file", func(ctx iris.Context) {
         //
         // UploadFormFiles
@@ -66,7 +66,7 @@ func newApp() *iris.Application {
         // at this example we will showcase how to use it
         // by prefixing the uploaded file with the current user's ip.
         ctx.UploadFormFiles("./share", beforeSave)
-        ctx.View("upload_form.html", 1)
+        ctx.View("index.html", 1)
     })
 
     app.Post("/upload_manual", func(ctx iris.Context) {

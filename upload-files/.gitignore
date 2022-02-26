@@ -1,0 +1,4 @@
+main
+daemonize.pid
+error.log
+stdout.log
