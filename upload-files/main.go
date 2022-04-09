@@ -5,10 +5,10 @@ import (
     "fmt"
     "io"
     "mime/multipart"
+    "os"
     "strconv"
     "strings"
     "time"
-    "os"
 
     "github.com/kataras/iris/v12"
 )
@@ -34,7 +34,7 @@ func  SaveFormFile(fh *multipart.FileHeader, dest string) (int64, error) {
 func main() {
     app := newApp()
     // start the server at http://localhost:8080 with post limit at 32 MB.
-    app.Listen(":8080", iris.WithPostMaxMemory(32<<20 /* same as 32 * iris.MB */))
+    app.Listen(":8080",  iris.WithRemoteAddrHeader("X-Forwarded-For"))
 }
 
 func newApp() *iris.Application {
@@ -98,6 +98,7 @@ func newApp() *iris.Application {
 
 func beforeSave(ctx iris.Context, file *multipart.FileHeader)  {
     ip := ctx.RemoteAddr()
+    fmt.Println("upload from host:",ip)
     // make sure you format the ip in a way
     // that can be used for a file name (simple case):
     ip = strings.ReplaceAll(ip, ".", "_")
